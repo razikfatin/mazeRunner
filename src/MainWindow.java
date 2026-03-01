@@ -10,12 +10,14 @@ public class MainWindow {
 
     private JPanel homePanel;
     private JPanel gamePanel;
-    private JPanel gameOverPanel;
+    private BackgroundPanel gameOverPanel;
 
     private JLabel winnerLabel;
 
     private Model gameworld;
     private Viewer canvas;
+    
+    private JLabel winnerImage;
 
     private Controller controller = new Controller();
 
@@ -48,15 +50,26 @@ public class MainWindow {
     }
 
     private void createHomeScreen(){
+        ImageIcon bg = new ImageIcon("res/homebg.png");
+        JLabel background = new JLabel(bg);
+        background.setLayout(null);
+        background.setBounds(0,0,1000,1000);
 
         homePanel = new JPanel(null);
+        homePanel.setLayout(new BorderLayout());
 
         JButton startButton = new JButton("Start Game");
-        startButton.setBounds(400,500,200,40);
+        startButton.setBounds(350,500,300,70);
+
+        startButton.setFont(new Font("Arial", Font.BOLD, 20));
+        startButton.setForeground(Color.WHITE);
+        startButton.setBackground(new Color(0,170,60));
+        startButton.setFocusPainted(false);
+        startButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY,4,true));
 
         startButton.addActionListener(e -> {
-        	
-        	controller.resetKeys();
+
+            controller.resetKeys();
 
             gameworld = new Model();
             canvas = new Viewer(gameworld);
@@ -76,13 +89,13 @@ public class MainWindow {
 
             cardLayout.show(mainPanel,"GAME");
 
-            // request focus AFTER switching panels
             SwingUtilities.invokeLater(() -> {
                 canvas.requestFocusInWindow();
             });
         });
 
-        homePanel.add(startButton);
+        background.add(startButton);
+        homePanel.add(background);
     }
 
     private void createGameScreen(){
@@ -92,13 +105,17 @@ public class MainWindow {
 
     private void createGameOverScreen(){
 
-        gameOverPanel = new JPanel(null);
+        gameOverPanel = new BackgroundPanel();
+        gameOverPanel.setLayout(null);
 
         winnerLabel = new JLabel("",SwingConstants.CENTER);
-        winnerLabel.setBounds(350,400,300,50);
+        winnerLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        winnerLabel.setForeground(Color.WHITE);
+        winnerLabel.setBounds(300,400,400,60);
 
         JButton homeButton = new JButton("Back to Home");
-        homeButton.setBounds(400,500,200,40);
+        homeButton.setBounds(400,500,200,50);
+        styleButton(homeButton);
 
         homeButton.addActionListener(e -> {
 
@@ -138,9 +155,15 @@ public class MainWindow {
                     }
 
                     else if(!gameOverShown){
+                    	String winner = gameworld.getWinner();
+                    	winnerLabel.setText(winner);
 
-                        winnerLabel.setText(gameworld.getWinner());
-
+                    	if(winner.contains("Player 1")){
+                    	    gameOverPanel.setImage("res/mario.png");
+                    	}
+                    	else{
+                    	    gameOverPanel.setImage("res/luigi.png");
+                    	}
                         cardLayout.show(mainPanel,"GAMEOVER");
 
                         gameOverShown = true;
@@ -153,6 +176,38 @@ public class MainWindow {
             }
 
         }).start();
+    }
+    
+    class BackgroundPanel extends JPanel {
+
+        private Image backgroundImage;
+
+        public void setImage(String path){
+            backgroundImage = new ImageIcon(path).getImage();
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g){
+            super.paintComponent(g);
+
+            if(backgroundImage != null){
+                g.drawImage(backgroundImage,0,0,getWidth(),getHeight(),this);
+            }
+        }
+    }
+    
+    private void styleButton(JButton button){
+    	JButton startButton = new JButton("Start Game");
+    	startButton.setBounds(350,500,300,70);
+
+    	startButton.setFont(new Font("Arial", Font.BOLD, 20));
+    	startButton.setForeground(Color.WHITE);
+
+    	startButton.setBackground(new Color(0,170,60));
+
+    	startButton.setFocusPainted(false);
+    	startButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY,4,true));
     }
 
     public static void main(String[] args){

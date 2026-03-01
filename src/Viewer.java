@@ -58,7 +58,7 @@ public class Viewer extends JPanel {
 	    try {
 	        backgroundImage = ImageIO.read(new File("res/background.png"));
 	        player1Image = ImageIO.read(new File("res/player3.png"));
-	        player2Image = ImageIO.read(new File("res/UFO.png"));
+	        player2Image = ImageIO.read(new File("res/player4.png"));
 	        wallImage = ImageIO.read(new File("res/wall.png"));
 	    } catch (IOException e) {
 	        e.printStackTrace();
@@ -187,7 +187,7 @@ public class Viewer extends JPanel {
 		//The spirte is 32x32 pixel wide and 4 of them are placed together so we need to grab a different one each time 
 		//remember your training :-) computer science everything starts at 0 so 32 pixels gets us to 31  
 		int currentPositionInAnimation= ((int) ((CurrentAnimationTime%40)/10))*32; //slows down animation so every 10 frames we get another frame so every 100ms 
-	    g.drawImage(player1Image, x, y, width, height, null);
+	    g.drawImage(player2Image, x, y, width, height, null);
 			
 		
 		 

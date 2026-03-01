@@ -39,6 +39,9 @@ public class Model {
 	 private int Score=0; 
 	 private int player1Lives = 3;
 	 private int player2Lives = 3;
+	 private float wallSpeed = 2;
+	 private int difficultyTimer = 0;
+
 
 	 private boolean gameOver = false;
 	 private String winner = "";
@@ -123,7 +126,7 @@ public class Model {
 		int blockSize = 50;
 	    int columns = 1000 / blockSize;
 
-	    int gapSize = 2 + (int)(Math.random()*2);   // gap will be 2 or 3 blocks wide
+	    int gapSize = Math.max(1, 4 - difficultyTimer / 2000);
 	    int gapStart = (int)(Math.random() * (columns - gapSize));
 
 	    for(int i = 0; i < columns; i++)
@@ -165,12 +168,16 @@ public class Model {
 
 	private void mazeLogic()
 	{
-	    float speed = 2;
+		difficultyTimer++;
 
+		if(difficultyTimer % 600 == 0 && wallSpeed < 8)
+		{
+		    wallSpeed += 0.5f;
+		}
 	    // move walls downward
 	    for(GameObject wall : Walls)
 	    {
-	        wall.getCentre().setY(wall.getCentre().getY() + speed);
+	        wall.getCentre().setY(wall.getCentre().getY() + wallSpeed);
 	    }
 
 	    // remove walls below screen
