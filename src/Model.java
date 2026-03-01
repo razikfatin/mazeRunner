@@ -120,7 +120,7 @@ public class Model {
 //	}
 	private void generateWallRow(float yPosition)
 	{
-		int blockSize = 20;
+		int blockSize = 50;
 	    int columns = 1000 / blockSize;
 
 	    int gapSize = 2 + (int)(Math.random()*2);   // gap will be 2 or 3 blocks wide
@@ -135,7 +135,7 @@ public class Model {
 
 	        Walls.add(
 	            new GameObject(
-	                "res/Ninja.png",
+	                "res/wall.png",
 	                blockSize,
 	                blockSize,
 	                new Point3f(i * blockSize, yPosition, 0)
@@ -165,7 +165,7 @@ public class Model {
 
 	private void mazeLogic()
 	{
-	    float speed = 4;
+	    float speed = 2;
 
 	    // move walls downward
 	    for(GameObject wall : Walls)
@@ -253,19 +253,19 @@ public class Model {
 		 
 		//check for movement and if you fired a bullet 
 		  
-if(Controller.getInstance().isKeyAPressed()){Player1.getCentre().ApplyVector( new Vector3f(-12,0,0)); }
+if(Controller.getInstance().isKeyAPressed()){Player1.getCentre().ApplyVector( new Vector3f(-6,0,0)); }
 		
 		if(Controller.getInstance().isKeyDPressed())
 		{
-			Player1.getCentre().ApplyVector( new Vector3f(12,0,0));
+			Player1.getCentre().ApplyVector( new Vector3f(6,0,0));
 		}
 			
 		if(Controller.getInstance().isKeyWPressed())
 		{
-			Player1.getCentre().ApplyVector( new Vector3f(0,12,0));
+			Player1.getCentre().ApplyVector( new Vector3f(0,6,0));
 		}
 		
-		if(Controller.getInstance().isKeySPressed()){Player1.getCentre().ApplyVector( new Vector3f(0,-12,0));}
+		if(Controller.getInstance().isKeySPressed()){Player1.getCentre().ApplyVector( new Vector3f(0,-6,0));}
 		
 		if(Controller.getInstance().isKeySpacePressed())
 		{
@@ -273,19 +273,19 @@ if(Controller.getInstance().isKeyAPressed()){Player1.getCentre().ApplyVector( ne
 			Controller.getInstance().setKeySpacePressed(false);
 		} 
 		
-if(Controller.getInstance().isKeyLeftPressed()){Player2.getCentre().ApplyVector( new Vector3f(-12,0,0)); }
+if(Controller.getInstance().isKeyLeftPressed()){Player2.getCentre().ApplyVector( new Vector3f(-6,0,0)); }
 		
 		if(Controller.getInstance().isKeyRightPressed())
 		{
-			Player2.getCentre().ApplyVector( new Vector3f(12,0,0));
+			Player2.getCentre().ApplyVector( new Vector3f(6,0,0));
 		}
 			
 		if(Controller.getInstance().isKeyUpPressed())
 		{
-			Player2.getCentre().ApplyVector( new Vector3f(0,12,0));
+			Player2.getCentre().ApplyVector( new Vector3f(0,6,0));
 		}
 		
-		if(Controller.getInstance().isKeyDownPressed()){Player2.getCentre().ApplyVector( new Vector3f(0,-12,0));}
+		if(Controller.getInstance().isKeyDownPressed()){Player2.getCentre().ApplyVector( new Vector3f(0,-6,0));}
 		
 		if(Controller.getInstance().isKeySpacePressed())
 		{

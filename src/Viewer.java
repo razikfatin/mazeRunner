@@ -57,9 +57,9 @@ public class Viewer extends JPanel {
 
 	    try {
 	        backgroundImage = ImageIO.read(new File("res/background.png"));
-	        player1Image = ImageIO.read(new File("res/UFO.png"));
+	        player1Image = ImageIO.read(new File("res/player3.png"));
 	        player2Image = ImageIO.read(new File("res/UFO.png"));
-	        wallImage = ImageIO.read(new File("res/Ninja.png"));
+	        wallImage = ImageIO.read(new File("res/wall.png"));
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
@@ -119,10 +119,10 @@ public class Viewer extends JPanel {
 		  
 		//Draw Bullets 
 		// change back 
-		gameworld.getBullets().forEach((temp) -> 
-		{ 
-			drawBullet((int) temp.getCentre().getX(), (int) temp.getCentre().getY(), (int) temp.getWidth(), (int) temp.getHeight(), temp.getTexture(),g);	 
-		}); 
+//		gameworld.getBullets().forEach((temp) -> 
+//		{ 
+//			drawBullet((int) temp.getCentre().getX(), (int) temp.getCentre().getY(), (int) temp.getWidth(), (int) temp.getHeight(), temp.getTexture(),g);	 
+//		}); 
 		
 //		//Draw Enemies   
 //		gameworld.getEnemies().forEach((temp) -> 
@@ -149,36 +149,32 @@ public class Viewer extends JPanel {
 	}
 	private void drawBackground(Graphics g)
 	{
-		File TextureToLoad = new File("res/earth.png");  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE 
 	    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
 	
 	}
-	
-	private void drawBullet(int x, int y, int width, int height, String texture,Graphics g)
-	{
-		File TextureToLoad = new File(texture);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE 
-		try {
-			Image myImage = ImageIO.read(TextureToLoad); 
-			//64 by 128 
-			 g.drawImage(myImage, x,y, x+width, y+height, 0 , 0, 63, 127, null); 
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
+//	
+//	private void drawBullet(int x, int y, int width, int height, String texture,Graphics g)
+//	{
+//		File TextureToLoad = new File(texture);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE 
+//		try {
+//			Image myImage = ImageIO.read(TextureToLoad); 
+//			//64 by 128 
+//			 g.drawImage(myImage, x,y, x+width, y+height, 0 , 0, 63, 127, null); 
+//			
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+//	
 
 	private void drawPlayer1(int x, int y, int width, int height, String texture,Graphics g) { 
-		File TextureToLoad = new File(texture);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE 
 		
 		//The spirte is 32x32 pixel wide and 4 of them are placed together so we need to grab a different one each time 
 		//remember your training :-) computer science everything starts at 0 so 32 pixels gets us to 31  
 		int currentPositionInAnimation= ((int) ((CurrentAnimationTime%40)/10))*32; //slows down animation so every 10 frames we get another frame so every 100ms 
-		g.drawImage(player1Image, x, y, x+width, y+height,
-	            currentPositionInAnimation, 0,
-	            currentPositionInAnimation+31, 32, null);			
-		
+	    g.drawImage(player1Image, x, y, width, height, null);
+
 		 
 		//g.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer));
 		//Lighnting Png from https://opengameart.org/content/animated-spaceships  its 32x32 thats why I know to increament by 32 each time 
@@ -187,14 +183,12 @@ public class Viewer extends JPanel {
 		
 	}
 	private void drawPlayer2(int x, int y, int width, int height, String texture,Graphics g) { 
-		File TextureToLoad = new File(texture);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE 
 		
 		//The spirte is 32x32 pixel wide and 4 of them are placed together so we need to grab a different one each time 
 		//remember your training :-) computer science everything starts at 0 so 32 pixels gets us to 31  
 		int currentPositionInAnimation= ((int) ((CurrentAnimationTime%40)/10))*32; //slows down animation so every 10 frames we get another frame so every 100ms 
-		g.drawImage(player2Image, x, y, x+width, y+height,
-	            currentPositionInAnimation, 0,
-	            currentPositionInAnimation+31, 32, null);			
+	    g.drawImage(player1Image, x, y, width, height, null);
+			
 		
 		 
 		//g.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer));
