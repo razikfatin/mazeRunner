@@ -46,7 +46,8 @@ SOFTWARE.
 public class Viewer extends JPanel {
 	private long CurrentAnimationTime= 0; 
 	private Image backgroundImage;
-	private Image playerImage;
+	private Image player1Image;
+	private Image player2Image;
 	private Image wallImage;
 	
 	Model gameworld; 
@@ -55,9 +56,10 @@ public class Viewer extends JPanel {
 		this.gameworld=World;
 
 	    try {
-	        backgroundImage = ImageIO.read(new File("res/earth.png"));
-	        playerImage = ImageIO.read(new File("res/Lightning.png"));
-	        wallImage = ImageIO.read(new File("res/wall.png"));
+	        backgroundImage = ImageIO.read(new File("res/background.png"));
+	        player1Image = ImageIO.read(new File("res/UFO.png"));
+	        player2Image = ImageIO.read(new File("res/UFO.png"));
+	        wallImage = ImageIO.read(new File("res/Ninja.png"));
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
@@ -104,7 +106,7 @@ public class Viewer extends JPanel {
 		drawBackground(g);
 		
 		//Draw player
-		drawPlayer(x1, y1, w1, h1, texture1,g);
+		drawPlayer1(x1, y1, w1, h1, texture1,g);
 		
 		// Draw Player 2
 		int x2 = (int) gameworld.getPlayer2().getCentre().getX();
@@ -113,7 +115,7 @@ public class Viewer extends JPanel {
 		int h2 = (int) gameworld.getPlayer2().getHeight();
 		String texture2 = gameworld.getPlayer2().getTexture();
 
-		drawPlayer(x2, y2, w2, h2, texture2, g);
+		drawPlayer2(x2, y2, w2, h2, texture2, g);
 		  
 		//Draw Bullets 
 		// change back 
@@ -140,22 +142,15 @@ public class Viewer extends JPanel {
 		    );
 		});
 	}
-	
 	private void drawEnemies(int x, int y, int width, int height, String texture, Graphics g) {
-		File TextureToLoad = new File(texture);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE 
-		//The spirte is 32x32 pixel wide and 4 of them are placed together so we need to grab a different one each time 
-		//remember your training :-) computer science everything starts at 0 so 32 pixels gets us to 31  
-		int currentPositionInAnimation= ((int) (CurrentAnimationTime%4 )*32); //slows down animation so every 10 frames we get another frame so every 100ms 
-		g.drawImage(wallImage, x,y, x+width, y+height, currentPositionInAnimation  , 0, currentPositionInAnimation+31, 32, null); 
-			
 
-		
+	    g.drawImage(wallImage, x, y, width, height, null);
+
 	}
-
 	private void drawBackground(Graphics g)
 	{
 		File TextureToLoad = new File("res/earth.png");  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE 
-		g.drawImage(backgroundImage, 0,0, 1000, 1000, 0 , 0, 1000, 1000, null); 
+	    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
 	
 	}
 	
@@ -174,13 +169,13 @@ public class Viewer extends JPanel {
 	}
 	
 
-	private void drawPlayer(int x, int y, int width, int height, String texture,Graphics g) { 
+	private void drawPlayer1(int x, int y, int width, int height, String texture,Graphics g) { 
 		File TextureToLoad = new File(texture);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE 
 		
 		//The spirte is 32x32 pixel wide and 4 of them are placed together so we need to grab a different one each time 
 		//remember your training :-) computer science everything starts at 0 so 32 pixels gets us to 31  
 		int currentPositionInAnimation= ((int) ((CurrentAnimationTime%40)/10))*32; //slows down animation so every 10 frames we get another frame so every 100ms 
-		g.drawImage(playerImage, x, y, x+width, y+height,
+		g.drawImage(player1Image, x, y, x+width, y+height,
 	            currentPositionInAnimation, 0,
 	            currentPositionInAnimation+31, 32, null);			
 		
@@ -191,7 +186,23 @@ public class Viewer extends JPanel {
 		// background image from https://www.needpix.com/photo/download/677346/space-stars-nebula-background-galaxy-universe-free-pictures-free-photos-free-images
 		
 	}
+	private void drawPlayer2(int x, int y, int width, int height, String texture,Graphics g) { 
+		File TextureToLoad = new File(texture);  //should work okay on OSX and Linux but check if you have issues depending your eclipse install or if your running this without an IDE 
+		
+		//The spirte is 32x32 pixel wide and 4 of them are placed together so we need to grab a different one each time 
+		//remember your training :-) computer science everything starts at 0 so 32 pixels gets us to 31  
+		int currentPositionInAnimation= ((int) ((CurrentAnimationTime%40)/10))*32; //slows down animation so every 10 frames we get another frame so every 100ms 
+		g.drawImage(player2Image, x, y, x+width, y+height,
+	            currentPositionInAnimation, 0,
+	            currentPositionInAnimation+31, 32, null);			
+		
 		 
+		//g.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer));
+		//Lighnting Png from https://opengameart.org/content/animated-spaceships  its 32x32 thats why I know to increament by 32 each time 
+		// Bullets from https://opengameart.org/forumtopic/tatermands-art 
+		// background image from https://www.needpix.com/photo/download/677346/space-stars-nebula-background-galaxy-universe-free-pictures-free-photos-free-images
+		
+	}
 	 
 
 }

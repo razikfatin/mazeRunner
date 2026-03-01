@@ -37,6 +37,11 @@ public class Model {
 	 private CopyOnWriteArrayList<GameObject> Walls = new CopyOnWriteArrayList<>();
 	 private  CopyOnWriteArrayList<GameObject> BulletList  = new CopyOnWriteArrayList<GameObject>();
 	 private int Score=0; 
+	 private int player1Lives = 3;
+	 private int player2Lives = 3;
+
+	 private boolean gameOver = false;
+	 private String winner = "";
 
 	public Model() {
 		 //setup game world 
@@ -46,11 +51,10 @@ public class Model {
 
 		
 		//Enemies  starting with four 
-		
-		generateWallRow(1000);
-		generateWallRow(1200);
-		generateWallRow(1400);
-		generateWallRow(1600);
+		generateWallRow(-80);
+		generateWallRow(-600);
+		generateWallRow(-1220);
+		generateWallRow(-1840);
 	    
 	}
 	
@@ -161,50 +165,85 @@ public class Model {
 
 	private void mazeLogic()
 	{
-	    float speed = 1;
+	    float speed = 4;
 
-	    // move all walls downward
+	    // move walls downward
 	    for(GameObject wall : Walls)
 	    {
-	        wall.getCentre().ApplyVector(new Vector3f(0,speed,0));
+	        wall.getCentre().setY(wall.getCentre().getY() + speed);
 	    }
 
-	    // remove walls that left the screen
-	    Walls.removeIf(wall -> wall.getCentre().getY() < -80);
+	    // remove walls below screen
+	    Walls.removeIf(wall -> wall.getCentre().getY() > 1100);
 
-	    // find highest wall currently on screen
-	    float highestY = 0;
+	    // if there are no walls or the highest wall is visible enough,
+	    // spawn a new row
+	    float topWall = 1000;
 
 	    for(GameObject wall : Walls)
 	    {
-	        if(wall.getCentre().getY() > highestY)
+	        if(wall.getCentre().getY() < topWall)
 	        {
-	            highestY = wall.getCentre().getY();
+	            topWall = wall.getCentre().getY();
 	        }
 	    }
 
-	    // if the highest wall is below a threshold, create a new row
-	    if(highestY < 800)
+	    if(topWall > 300)
 	    {
-	        generateWallRow(1000);
+	        generateWallRow(-400);
 	    }
 	}
 	
+//	private void collisionLogic()
+//	{
+//	    for(GameObject wall : Walls)
+//	    {
+//	        if(Math.abs(wall.getCentre().getX()-Player1.getCentre().getX()) < wall.getWidth()
+//	        && Math.abs(wall.getCentre().getY()-Player1.getCentre().getY()) < wall.getHeight())
+//	        {
+//	            Score--;
+//	        }
+//
+//	        if(Math.abs(wall.getCentre().getX()-Player2.getCentre().getX()) < wall.getWidth()
+//	        && Math.abs(wall.getCentre().getY()-Player2.getCentre().getY()) < wall.getHeight())
+//	        {
+//	            Score--;
+//	        }
+//	    }
+//	}
 	private void collisionLogic()
 	{
 	    for(GameObject wall : Walls)
 	    {
+	        // Player 1 collision
 	        if(Math.abs(wall.getCentre().getX()-Player1.getCentre().getX()) < wall.getWidth()
 	        && Math.abs(wall.getCentre().getY()-Player1.getCentre().getY()) < wall.getHeight())
 	        {
-	            Score--;
+	            player1Lives--;
+	            Walls.remove(wall);
+	            break;
 	        }
 
+	        // Player 2 collision
 	        if(Math.abs(wall.getCentre().getX()-Player2.getCentre().getX()) < wall.getWidth()
 	        && Math.abs(wall.getCentre().getY()-Player2.getCentre().getY()) < wall.getHeight())
 	        {
-	            Score--;
+	            player2Lives--;
+	            Walls.remove(wall);
+	            break;
 	        }
+	    }
+
+	    if(player1Lives <= 0)
+	    {
+	        gameOver = true;
+	        winner = "Player 2 Wins!";
+	    }
+
+	    if(player2Lives <= 0)
+	    {
+	        gameOver = true;
+	        winner = "Player 1 Wins!";
 	    }
 	}
 
@@ -288,7 +327,25 @@ if(Controller.getInstance().isKeyLeftPressed()){Player2.getCentre().ApplyVector(
 	public int getScore() { 
 		return Score;
 	}
- 
+	public int getPlayer1Lives()
+	{
+	    return player1Lives;
+	}
+
+	public int getPlayer2Lives()
+	{
+	    return player2Lives;
+	}
+
+	public boolean isGameOver()
+	{
+	    return gameOver;
+	}
+
+	public String getWinner()
+	{
+	    return winner;
+	}
 
 }
 
