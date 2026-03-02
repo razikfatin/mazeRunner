@@ -36,6 +36,15 @@ public class Model {
 	 private Controller controller = Controller.getInstance();
 	 private CopyOnWriteArrayList<GameObject> Walls = new CopyOnWriteArrayList<>();
 	 private  CopyOnWriteArrayList<GameObject> BulletList  = new CopyOnWriteArrayList<GameObject>();
+	 private CopyOnWriteArrayList<GameObject> SpeedPowerUps = new CopyOnWriteArrayList<>();
+	 private CopyOnWriteArrayList<GameObject> InvertPowerDowns = new CopyOnWriteArrayList<>();
+	 private int player1SpeedTimer = 0;
+	 private int player2SpeedTimer = 0;
+
+	 private int player1InvertTimer = 0;
+	 private int player2InvertTimer = 0;
+	 private float player1Speed = 6;
+	 private float player2Speed = 6;
 	 private int Score=0; 
 	 private int player1Lives = 3;
 	 private int player2Lives = 3;
@@ -66,8 +75,43 @@ public class Model {
 	{
 		playerLogic();
 		mazeLogic();
+	    powerUpLogic();
 		collisionLogic();
+		spawnPowerUps();
 	   
+	}
+	
+	private void spawnPowerUps()
+	{
+	    if(Math.random() < 0.001)
+	    {
+	        SpeedPowerUps.add(
+	            new GameObject("res/blue01.png",40,40,new Point3f((float)Math.random()*950,-50,0))
+	        );
+	    }
+
+	    if(Math.random() < 0.01)
+	    {
+	        InvertPowerDowns.add(
+	            new GameObject("res/red01.png",40,40,new Point3f((float)Math.random()*950,-50,0))
+	        );
+	    }
+	}
+	
+	private void powerUpLogic()
+	{
+	    for(GameObject power : SpeedPowerUps)
+	    {
+	        power.getCentre().setY(power.getCentre().getY() + wallSpeed);
+	    }
+
+	    for(GameObject power : InvertPowerDowns)
+	    {
+	        power.getCentre().setY(power.getCentre().getY() + wallSpeed);
+	    }
+
+	    SpeedPowerUps.removeIf(p -> p.getCentre().getY() > 1100);
+	    InvertPowerDowns.removeIf(p -> p.getCentre().getY() > 1100);
 	}
 
 	private void gameLogic() { 
@@ -252,6 +296,46 @@ public class Model {
 	        gameOver = true;
 	        winner = "Player 1 Wins!";
 	    }
+	    
+	    for(GameObject power : SpeedPowerUps)
+	    {
+	        if(Math.abs(power.getCentre().getX()-Player1.getCentre().getX()) < power.getWidth()
+	        && Math.abs(power.getCentre().getY()-Player1.getCentre().getY()) < power.getHeight())
+	        {
+	            player1Speed = 12;
+	            player1SpeedTimer = 600;
+	            SpeedPowerUps.remove(power);
+	            break;
+	        }
+
+	        if(Math.abs(power.getCentre().getX()-Player2.getCentre().getX()) < power.getWidth()
+	        && Math.abs(power.getCentre().getY()-Player2.getCentre().getY()) < power.getHeight())
+	        {
+	            player2Speed = 12;
+	            player2SpeedTimer = 600;
+	            SpeedPowerUps.remove(power);
+	            break;
+	        }
+	    }
+	    
+	    for(GameObject power : InvertPowerDowns)
+	    {
+	        if(Math.abs(power.getCentre().getX()-Player1.getCentre().getX()) < power.getWidth()
+	        && Math.abs(power.getCentre().getY()-Player1.getCentre().getY()) < power.getHeight())
+	        {
+	            player1InvertTimer = 600;
+	            InvertPowerDowns.remove(power);
+	            break;
+	        }
+
+	        if(Math.abs(power.getCentre().getX()-Player2.getCentre().getX()) < power.getWidth()
+	        && Math.abs(power.getCentre().getY()-Player2.getCentre().getY()) < power.getHeight())
+	        {
+	            player2InvertTimer = 600;
+	            InvertPowerDowns.remove(power);
+	            break;
+	        }
+	    }
 	}
 
 	private void playerLogic() {
@@ -259,47 +343,58 @@ public class Model {
 		// smoother animation is possible if we make a target position  // done but may try to change things for students  
 		 
 		//check for movement and if you fired a bullet 
+		if(player1SpeedTimer > 0)
+		{
+		    player1SpeedTimer--;
+		}
+		else
+		{
+		    player1Speed = 6;
+		}
+
+		if(player2SpeedTimer > 0)
+		{
+		    player2SpeedTimer--;
+		}
+		else
+		{
+		    player2Speed = 6;
+		}
+
+		if(player1InvertTimer > 0) player1InvertTimer--;
+		if(player2InvertTimer > 0) player2InvertTimer--;
 		  
-if(Controller.getInstance().isKeyAPressed()){Player1.getCentre().ApplyVector( new Vector3f(-6,0,0)); }
-		
+		float p1 = player1Speed;
+
+		if(player1InvertTimer > 0) p1 = -p1;
+
+		if(Controller.getInstance().isKeyAPressed())
+		    Player1.getCentre().ApplyVector(new Vector3f(-p1,0,0));
+
 		if(Controller.getInstance().isKeyDPressed())
-		{
-			Player1.getCentre().ApplyVector( new Vector3f(6,0,0));
-		}
-			
+		    Player1.getCentre().ApplyVector(new Vector3f(p1,0,0));
+
 		if(Controller.getInstance().isKeyWPressed())
-		{
-			Player1.getCentre().ApplyVector( new Vector3f(0,6,0));
-		}
+		    Player1.getCentre().ApplyVector(new Vector3f(0,p1,0));
+
+		if(Controller.getInstance().isKeySPressed())
+		    Player1.getCentre().ApplyVector(new Vector3f(0,-p1,0));
 		
-		if(Controller.getInstance().isKeySPressed()){Player1.getCentre().ApplyVector( new Vector3f(0,-6,0));}
-		
-		if(Controller.getInstance().isKeySpacePressed())
-		{
-			CreateBulletPlayer1();
-			Controller.getInstance().setKeySpacePressed(false);
-		} 
-		
-if(Controller.getInstance().isKeyLeftPressed()){Player2.getCentre().ApplyVector( new Vector3f(-6,0,0)); }
-		
+		float p2 = player2Speed;
+
+		if(player2InvertTimer > 0) p2 = -p2;
+
+		if(Controller.getInstance().isKeyLeftPressed())
+		    Player2.getCentre().ApplyVector(new Vector3f(-p2,0,0));
+
 		if(Controller.getInstance().isKeyRightPressed())
-		{
-			Player2.getCentre().ApplyVector( new Vector3f(6,0,0));
-		}
-			
+		    Player2.getCentre().ApplyVector(new Vector3f(p2,0,0));
+
 		if(Controller.getInstance().isKeyUpPressed())
-		{
-			Player2.getCentre().ApplyVector( new Vector3f(0,6,0));
-		}
-		
-		if(Controller.getInstance().isKeyDownPressed()){Player2.getCentre().ApplyVector( new Vector3f(0,-6,0));}
-		
-		if(Controller.getInstance().isKeySpacePressed())
-		{
-			CreateBulletPlayer1();
-			Controller.getInstance().setKeySpacePressed(false);
-		} 
-		
+		    Player2.getCentre().ApplyVector(new Vector3f(0,p2,0));
+
+		if(Controller.getInstance().isKeyDownPressed())
+		    Player2.getCentre().ApplyVector(new Vector3f(0,-p2,0));
 		
 	}
 
@@ -329,6 +424,16 @@ if(Controller.getInstance().isKeyLeftPressed()){Player2.getCentre().ApplyVector(
 	
 	public CopyOnWriteArrayList<GameObject> getWalls() {
 		return Walls;
+	}
+	
+	public CopyOnWriteArrayList<GameObject> getSpeedPowerUps()
+	{
+	    return SpeedPowerUps;
+	}
+
+	public CopyOnWriteArrayList<GameObject> getInvertPowerDowns()
+	{
+	    return InvertPowerDowns;
 	}
 	
 	public int getScore() { 

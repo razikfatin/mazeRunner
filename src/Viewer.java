@@ -49,6 +49,8 @@ public class Viewer extends JPanel {
 	private Image player1Image;
 	private Image player2Image;
 	private Image wallImage;
+	private Image speedPowerUpImage;
+	private Image invertPowerDownImage;
 	
 	Model gameworld; 
 	 
@@ -60,6 +62,8 @@ public class Viewer extends JPanel {
 	        player1Image = ImageIO.read(new File("res/player3.png"));
 	        player2Image = ImageIO.read(new File("res/player4.png"));
 	        wallImage = ImageIO.read(new File("res/wall.png"));
+	        speedPowerUpImage = ImageIO.read(new File("res/blue01.png"));
+	        invertPowerDownImage = ImageIO.read(new File("res/red01.png"));
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
@@ -141,6 +145,32 @@ public class Viewer extends JPanel {
 		        g
 		    );
 		});
+		// Draw Speed PowerUps
+		gameworld.getSpeedPowerUps().forEach((power) ->
+		{
+		    g.drawImage(
+		        speedPowerUpImage,
+		        (int)power.getCentre().getX(),
+		        (int)power.getCentre().getY(),
+		        (int)power.getWidth(),
+		        (int)power.getHeight(),
+		        null
+		    );
+		});
+
+		// Draw Invert PowerDowns
+		gameworld.getInvertPowerDowns().forEach((power) ->
+		{
+		    g.drawImage(
+		        invertPowerDownImage,
+		        (int)power.getCentre().getX(),
+		        (int)power.getCentre().getY(),
+		        (int)power.getWidth(),
+		        (int)power.getHeight(),
+		        null
+		    );
+		});
+		
 	}
 	private void drawEnemies(int x, int y, int width, int height, String texture, Graphics g) {
 
@@ -152,6 +182,7 @@ public class Viewer extends JPanel {
 	    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
 	
 	}
+	
 //	
 //	private void drawBullet(int x, int y, int width, int height, String texture,Graphics g)
 //	{

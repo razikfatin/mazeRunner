@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.sound.sampled.*;
+import java.io.File;
+
 
 public class MainWindow {
 
@@ -19,6 +22,7 @@ public class MainWindow {
     
     private JLabel winnerImage;
 
+    private Clip clip;
     private Controller controller = new Controller();
 
     private boolean startGame = false;
@@ -68,6 +72,7 @@ public class MainWindow {
         startButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY,4,true));
 
         startButton.addActionListener(e -> {
+            playMusic("res/dod3.wav");
 
             controller.resetKeys();
 
@@ -104,7 +109,7 @@ public class MainWindow {
     }
 
     private void createGameOverScreen(){
-
+ 
         gameOverPanel = new BackgroundPanel();
         gameOverPanel.setLayout(null);
 
@@ -118,6 +123,10 @@ public class MainWindow {
         styleButton(homeButton);
 
         homeButton.addActionListener(e -> {
+        	if(clip != null)
+        	{
+        	    clip.stop();
+        	}
 
             startGame = false;
             gameOverShown = false;
@@ -155,13 +164,20 @@ public class MainWindow {
                     }
 
                     else if(!gameOverShown){
+                       	if(clip != null)
+                    	{
+                    	    clip.stop();
+                    	}
+
                     	String winner = gameworld.getWinner();
                     	winnerLabel.setText(winner);
 
                     	if(winner.contains("Player 1")){
+                            playMusic("res/win1.wav");
                     	    gameOverPanel.setImage("res/mario.png");
                     	}
-                    	else{
+                    	else{            
+                    		playMusic("res/win2.wav");
                     	    gameOverPanel.setImage("res/luigi.png");
                     	}
                         cardLayout.show(mainPanel,"GAMEOVER");
@@ -194,6 +210,28 @@ public class MainWindow {
             if(backgroundImage != null){
                 g.drawImage(backgroundImage,0,0,getWidth(),getHeight(),this);
             }
+        }
+    }
+    
+    public void playMusic(String filepath)
+    {
+        try
+        {
+            File musicPath = new File(filepath);
+
+            if(musicPath.exists())
+            {
+                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                clip = AudioSystem.getClip();
+                clip.open(audioInput);
+
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+                clip.start();
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
         }
     }
     
